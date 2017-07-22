@@ -1,0 +1,18 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{group.name}}</ion-title>
+  </ion-navbar>
+</ion-header>
+
+<ion-list no-lines>
+  <ion-item *ngFor="let groupMember of  groupMembers" (click)="showGroupMemeberDetails()" >
+    {{groupMember.name}}
+  </ion-item>
+</ion-list>
+
+<button ion-button outline >Add tag to group</button>
+<button ion-button outline >Delete group</button>
+<ion-content padding>
+
+</ion-content>
