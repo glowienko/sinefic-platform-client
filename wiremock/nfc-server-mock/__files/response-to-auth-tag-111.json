@@ -1,0 +1,21 @@
+{
+    "id": [1,1,1],
+    "groups": [
+        {
+            "name":"praca",
+            "pluginName":"geolocation",
+            "adminId":[1,1,1]
+        },
+        {
+            "name":"wydzial",
+            "pluginName":"geolocation",
+            "adminId":[2,2,2]
+        },
+        {
+            "name":"grupa T1",
+            "pluginName":"messaging",
+            "adminId":[1,1,1]
+        }
+    ],
+    "token":"abc"
+}

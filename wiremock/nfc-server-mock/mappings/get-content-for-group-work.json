@@ -1,0 +1,10 @@
+{
+    "request": {
+        "method": "GET",
+        "url": "/groups/praca/content"
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "response-to-get-content-for-group-work.json"
+    }
+}

@@ -1,0 +1,15 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/groups/praca/members",
+        "bodyPatterns": [
+            {
+                "equalToJson": "{\"newTagId\": [2,2,2]}"
+            }
+        ]
+        
+    },
+    "response": {
+        "status": 201
+    }
+}
