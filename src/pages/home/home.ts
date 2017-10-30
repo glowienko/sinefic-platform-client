@@ -1,6 +1,6 @@
 
 import { Component } from '@angular/core';
-import { AlertController, Platform } from 'ionic-angular';
+import { AlertController } from 'ionic-angular';
 import { NFC } from '@ionic-native/nfc';
 
 import { NfcTagService } from './../../services/nfc-tag-service'
@@ -12,41 +12,23 @@ import { NfcTagService } from './../../services/nfc-tag-service'
   providers: [NfcTagService]
 })
 export class HomePage {
-
-  errorMessage: any;
-
-  constructor(private platform: Platform, private nfc: NFC, private nfcTagService: NfcTagService, private alertCtrl: AlertController) {
-    
+  constructor(private nfc: NFC, private nfcTagService: NfcTagService, private alertCtrl: AlertController) {
     nfc.enabled().then(
-      () => {
-        this.onNfcEnabled();
-      },
-      () => this.onNfcDisabled());
-
-    console.log('in home controller');
+      () => this.onNfcEnabled(),
+      () => this.onNfcDisabled()
+    );
   }
 
-  public adminPage() {
-    let tag = { id: [3, 2, 1] };
+  public groupsPage() {
+    let tag = { id: [1, 1, 1] };
     let tagEvent = { 'tag': tag };
-    console.log('in adminPage method');
-
-    this.nfcTagService.tagReadSuccess(tagEvent);
-  }
-
-  public subscriberPage() {
-    let tag = { id: [1, 2, 3] };
-    let tagEvent = { 'tag': tag };
-    console.log('subscriber page method');
-
     this.nfcTagService.tagReadSuccess(tagEvent);
   }
 
   private onNfcDisabled() {
     let alert = this.alertCtrl.create({
-      title: 'Switch on NFC in your smartphone',
-      buttons: ['Ok']
-    });
+      title: 'Potrzebujesz włączonego NFC !', 
+      buttons: ['Ok']});
     alert.present();
   }
 

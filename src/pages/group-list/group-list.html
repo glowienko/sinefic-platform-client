@@ -1,12 +1,12 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>Your groups</ion-title>
+    <ion-title>Twoje grupy</ion-title>
   </ion-navbar>
 </ion-header>
 
 <ion-content padding>
   <ion-list>
-    <button ion-item *ngFor="let group of groups" (click)="showGroupView(group)">
+    <button ion-item *ngFor="let group of userTag.groups" (click)="manageGroup(group)">
     {{ group.name }}
   </button>
   </ion-list>

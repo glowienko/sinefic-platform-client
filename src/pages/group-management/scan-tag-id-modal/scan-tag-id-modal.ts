@@ -68,9 +68,8 @@ export class ScanTagIdModalPage {
   }
 
   private tagReadSuccess(tagId: Array<Number>) {
-      //show some info maybe
-      this.scannedTagId = tagId;
-      this.dismiss();
+    this.scannedTagId = tagId;
+    this.dismiss();
   }
 
 }

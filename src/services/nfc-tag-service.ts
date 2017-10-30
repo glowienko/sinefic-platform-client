@@ -48,7 +48,6 @@ export class NfcTagService {
                 console.log(userTagData);
 
                 this.storage.set('tag-info', userTagData);
-                this.storage.set('tag-id', userTagData.id);
             });
     }
 

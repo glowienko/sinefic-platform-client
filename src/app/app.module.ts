@@ -4,17 +4,14 @@ import { BrowserModule } from '@angular/platform-browser';
 import { SplashScreen } from '@ionic-native/splash-screen';
 import { StatusBar } from '@ionic-native/status-bar';
 import { HttpModule } from '@angular/http';
-
-
 import { NFC } from '@ionic-native/nfc';
 import { IonicStorageModule } from '@ionic/storage';
 
 import { MyApp } from './app.component';
+
 import { HomePage } from '../pages/home/home';
-import { AdminPage } from '../pages/admin/admin';
-import { SubscriberPage } from '../pages/subscriber/subscriber';
+import { GroupListPage } from '../pages/group-list/group-list';
 import { GroupManagementPage } from '../pages/group-management/group-management';
-import { SubscriberGroupSelectedModalPage } from '../pages/subscriber-group-selected-modal/subscriber-group-selected-modal'
 
 import { TagsClient } from './../providers/tags-client/tags-client'
 
@@ -22,10 +19,8 @@ import { TagsClient } from './../providers/tags-client/tags-client'
   declarations: [
     MyApp,
     HomePage,
-    AdminPage,
-    SubscriberPage,
-    GroupManagementPage,
-    SubscriberGroupSelectedModalPage
+    GroupListPage,
+    GroupManagementPage
   ],
   imports: [
     BrowserModule,
@@ -38,10 +33,8 @@ import { TagsClient } from './../providers/tags-client/tags-client'
   entryComponents: [
     MyApp,
     HomePage,
-    AdminPage,
-    SubscriberPage,
-    GroupManagementPage,
-    SubscriberGroupSelectedModalPage
+    GroupListPage,
+    GroupManagementPage
   ],
   providers: [
     StatusBar,

@@ -2,10 +2,11 @@ import { Component } from '@angular/core';
 import { NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { Group } from './../../providers/tags-client/domain/group';
+import { Content } from './../../providers/tags-client/domain/content'
 import { UserTagData } from './../../providers/tags-client/domain/user-tag-data';
 import { TagsClient } from './../../providers/tags-client/tags-client';
 
-import {ScanTagIdModalPage} from './scan-tag-id-modal/scan-tag-id-modal';
+import { ScanTagIdModalPage } from './scan-tag-id-modal/scan-tag-id-modal';
 
 @Component({
   selector: 'page-group-management',
@@ -14,40 +15,39 @@ import {ScanTagIdModalPage} from './scan-tag-id-modal/scan-tag-id-modal';
 })
 export class GroupManagementPage {
 
-  private ownerId: Array<Number>;
+  private userTagId: Array<Number>;
   public group: Group;
   public groupMembers: Array<UserTagData>;
+  public groupContentUrl: String;
+  public isTagGroupAdmin: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams, public tagsClient: TagsClient, public modalCtrl: ModalController) { }
 
   ionViewDidLoad() {
     this.group = this.navParams.data.group;
-    this.ownerId = this.navParams.data.tagId;
+    this.userTagId = this.navParams.data.tagId;
+    this.getContentUrlForGroup(this.group);
+    this.evaluateUserTagScope(this.userTagId, this.group.adminId);
+  }
 
-    this.tagsClient.getTagsForGroup(this.group.name, this.ownerId).subscribe(
-      (groupMembers) => {
-        this.groupMembers = groupMembers;
-      });
+  public openPluginApp() {
+    //TODO
   }
 
   public addGroupMember() {
-    let newTag = new UserTagData();
-
-    newTag.groups.push(this.group);
-    newTag.isAdmin = false;
-    newTag.id = [1,1,1];
-    //show popup for scanning tag ID TODO : take tag /id from the real NFC TAG
-
     let scanTagIdModal = this.createTagIdScanningModal();
 
     scanTagIdModal.onDidDismiss(scannedTagId => {
-        newTag.id = scannedTagId;
-        this.tagsClient.addTagToGroup(this.group.name, newTag);
+      this.tagsClient.addTagToGroup(scannedTagId, this.group.name);
     });
   }
 
-  public deleteGroupMember(userTag: UserTagData) {
-    this.tagsClient.deleteTagFromGroup(userTag.id, this.group.name);
+  public deleteGroupMember() {
+    let scanTagIdModal = this.createTagIdScanningModal();
+
+    scanTagIdModal.onDidDismiss(scannedTagId => {
+      this.tagsClient.deleteTagFromGroup(scannedTagId, this.group.name);
+    });
   }
 
   public deleteGroup() {
@@ -60,4 +60,16 @@ export class GroupManagementPage {
     return scanTagIdModal;
   }
 
+  private getContentUrlForGroup(group: Group) {
+    this.tagsClient.getContentUrl(group.name)
+      .subscribe(
+          (content: Content) => this.groupContentUrl = content.url
+        )
+  }
+
+  private evaluateUserTagScope(userTagId, groupAdminId)  {
+    this.isTagGroupAdmin = userTagId === groupAdminId ? true : false;
+  }
+
 }
+
