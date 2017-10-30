@@ -3,29 +3,28 @@ import { AlertController, NavController } from 'ionic-angular';
 
 import { Storage } from '@ionic/storage';
 import { TagsClient } from './../providers/tags-client/tags-client'
-import { AdminPage } from './../pages/admin/admin';
-import { SubscriberPage } from './../pages/subscriber/subscriber';
+import { GroupListPage } from './../pages/group-list/group-list';
 
 import { UserTagData } from './../providers/tags-client/domain/user-tag-data';
 
 @Injectable()
 export class NfcTagService {
 
-    constructor(private storage: Storage, private alertCtrl: AlertController, 
+    constructor(private storage: Storage, private alertCtrl: AlertController,
         private navCtrl: NavController, private tagsClient: TagsClient) { }
 
     public tagReadSuccess(tagEvent: any) {
         console.log('in tag read success, tag:');
         console.log(tagEvent.tag);
 
-        this.tagsClient.getTagInfoById(this.extractTagIdFromTagEvent(tagEvent))
+        this.tagsClient.authenticateTag(this.extractTagIdFromTagEvent(tagEvent))
             .subscribe(
             (userTagData) => {
                 console.log(userTagData);
                 this.saveUserTagToStorage(userTagData);
-                this.showTagReadSuccessAlert(userTagData.isAdmin);
+                this.showTagReadSuccessAlert();
             },
-            error => this.showApiConnectionError(error));
+            error => this.showApiConnectionError());
     }
 
     public failureReadTag(error) {
@@ -36,7 +35,6 @@ export class NfcTagService {
         });
         alert.present();
     }
-    
 
     public extractTagIdFromTagEvent(tagEvent: any) {
         return tagEvent.tag.id;
@@ -54,37 +52,31 @@ export class NfcTagService {
             });
     }
 
-    private showTagReadSuccessAlert(isAdmin: boolean) {
-        let role = isAdmin ? 'Admin' : 'Subscriber';
+    private showTagReadSuccessAlert() {
         let alert = this.alertCtrl.create({
-            title: 'Tag read success',
-            subTitle: 'Hello ' + role + ' !',
-            message: 'Click OK to use application',
+            title: 'Pomyślnie odczytano tag nfc',
+            subTitle: 'Witaj !',
+            message: 'Naciśnij OK, aby korzystać z aplikacji',
             buttons: [
                 {
                     text: 'OK',
-                    handler: () => this.changeViewDepeningOnRole(isAdmin)
+                    handler: () => this.goToGroupsView()
                 }
             ]
         });
         alert.present();
     }
 
-    private changeViewDepeningOnRole(isAdmin: boolean) {
-        if (isAdmin) {
-            this.navCtrl.push(AdminPage);
-        }
-        else {
-            this.navCtrl.push(SubscriberPage);
-        }
+    private goToGroupsView() {
+        this.navCtrl.push(GroupListPage);
     }
 
-    private showApiConnectionError(error) {
+    private showApiConnectionError() {
         let alert = this.alertCtrl.create({
-            title: 'Connection error!',
-            subTitle: 'Cannot fetch tag-info from the server',
-            message: error,
-            buttons: ['Ok']
+            title: 'Ooops!',
+            subTitle: "Błąd nawiązywania połączenia",
+            message: 'Nie można pobrać danych taga z serwera.',
+            buttons: ['OK']
         });
         alert.present();
     }

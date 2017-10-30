@@ -6,108 +6,99 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import { UserTagData } from './domain/user-tag-data';
-import { ContentUrl } from './domain/content-url';
+import { Content } from './domain/content';
 import { Group } from './domain/group';
 
 @Injectable()
 export class TagsClient {
 
-  private groupsUrl: string;
-  private tagUrl: string;
-  private contentUrl: string;
   private headers: Headers;
   private options: RequestOptions;
 
   private server_url: string = 'http://localhost:9595';// TODO: should be taken from config
+  private auth_request_path: string = '/auth';
+  private groups_path = '/groups';
+  private content_path: string = '/content';
+  private plugins_path: string = '/plugins';
+  private members_path: string = '/members';
 
   constructor(public http: Http, public storage: Storage) {
-    this.groupsUrl = '/api/groups';// TODO: should be taken from config
-    this.tagUrl = '/api/tag';
-    this.contentUrl = '/api/content/url';
+
 
     this.headers = new Headers({ 'Content-Type': 'application/json' });
 
     this.options = new RequestOptions({ headers: this.headers });
   }
 
-  public getTagInfoById(tagId: Array<Number>): Observable<UserTagData> {
+  public authenticateTag(tagId: Array<Number>): Observable<UserTagData> {
+    let authUrl: any = this.server_url + this.auth_request_path;
 
-    console.log('in get tag info method api call');
-
-    let infoUrl: any = this.server_url + this.tagUrl + '?' + this.getTagIdForUrl(tagId);
-
-    return this.http.get(infoUrl, this.options)
+    return this.http.post(authUrl, { tagId: tagId }, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  public getContentUrlByGroupName(groupName: string): Observable<ContentUrl> {
-    console.log('in get conntent by group name api call');
-    this.addAuthHeaderIfNoExist();
-    let contetnUrl: any = this.server_url + this.contentUrl + `/${groupName}`;
+  public createGroup(newGroup: Group): Observable<Group> {
+    this.addAuthHeaderIfNotExist();
+    let groupsUrl: any = this.server_url + this.groups_path;
+
+    return this.http.post(groupsUrl, newGroup, this.options)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  public getAvailablePlugins(): Observable<Array<String>> {
+    this.addAuthHeaderIfNotExist();
+    let pluginsUrl: any = this.server_url + this.plugins_path;
+
+    return this.http.get(pluginsUrl, this.options)
+      .map(this.extractData)
+      .catch(this.handleError);
+  }
+
+  public getContentUrl(groupName: string): Observable<Content> {
+    this.addAuthHeaderIfNotExist();
+
+    let contetnUrl: any = this.server_url + this.groups_path + `/${groupName}` + this.content_path;
 
     return this.http.get(contetnUrl, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  public createGroup(newGroup: Group, tagId: Array<Number>): Observable<Group> {
-    this.addAuthHeaderIfNoExist();
-    let groupsUrl: any = this.server_url + this.groupsUrl;
-    let requestBody = {
-      newGroup: newGroup,
-      tagId: tagId
-    };
-    return this.http.post(this.groupsUrl, requestBody, this.options)
-      .map(this.extractData)
-      .catch(this.handleError);
-  }
-
-  public getTagsForGroup(groupName: string, groupAdmin: Array<Number>) {
-    this.addAuthHeaderIfNoExist();
-    let groupsUrl: any = this.server_url + this.groupsUrl + `/${groupName}` + '?' + this.getTagIdForUrl(groupAdmin);
-
-    return this.http.get(groupsUrl, this.options)
-      .map(this.extractData)
-      .catch(this.handleError);
-  }
-
   public deleteGroup(groupName: string): Observable<Group> {
-    this.addAuthHeaderIfNoExist();
-    let groupsUrl: any = this.server_url + this.groupsUrl + `/${groupName}`;
+    this.addAuthHeaderIfNotExist();
+    let groupsUrl: any = this.server_url + this.groups_path + `/${groupName}`;
 
     return this.http.delete(groupsUrl, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  public addTagToGroup(groupName: string, newTag: UserTagData): Observable<Group> {
-    this.addAuthHeaderIfNoExist();
-    let addTagTogroupUrl: any = this.server_url + this.tagUrl + `/${groupName}`;
+  public addTagToGroup(newTagId: Array<Number>, groupName: string) {
+    this.addAuthHeaderIfNotExist();
+    let addTagTogroupUrl: any = this.server_url + `/${groupName}` + this.members_path;
 
-    return this.http.post(addTagTogroupUrl, newTag, this.options)
+    return this.http.post(addTagTogroupUrl, {newTagId: newTagId}, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  public deleteTagFromGroup(tagId: Array<Number>, groupName: string): Observable<Group> {
-    this.addAuthHeaderIfNoExist();
-    let deleteTagFromGroupUrl: any = this.server_url + this.tagUrl + `/${tagId}/group/${groupName}`;
+  public deleteTagFromGroup(tagId: Array<Number>, groupName: string) {
+    this.addAuthHeaderIfNotExist();
+    let deleteTagFromGroupUrl: any = this.server_url + this.groups_path +  `/${groupName}` + this.members_path + `/${tagId}`;
 
     return this.http.delete(deleteTagFromGroupUrl, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
-  //addMessage to group -- api for services :)
-  //send location to group
-
-  private addAuthHeaderIfNoExist() {
+  private addAuthHeaderIfNotExist() {
     if (!this.headers.has('Authorization')) {
       this.storage.ready().then(() => {
         this.storage.get('tag-info').then(
           (UserTagData: UserTagData) => {
-            this.headers.append('Authorization', UserTagData.access_token);
+            this.headers.append('Authorization', UserTagData.token);
             this.options = new RequestOptions({ headers: this.headers });
           });
       });
@@ -119,11 +110,6 @@ export class TagsClient {
     console.log(res.json());
     let body = res.json();
     return body || {};
-  }
-
-  private getTagIdForUrl(tagId: Array<Number>) {
-    //returns: tag_id[one]=1&tag_id[two]=2&tag_id[three]=3
-    return 'tag_id[one]=' + tagId[0] + '&tag_id[two]=' + tagId[1] + '&tag_id[three]=' + tagId[2];
   }
 
   private handleError(error: Response | any) {

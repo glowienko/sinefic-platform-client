@@ -1,5 +1,5 @@
 export class Group {
-    id: Number
     name: string
-    service: string // eg. Geolocation, Message sending
+    pluginName: string // eg. Geolocation, Message sending
+    adminId: Array<Number>;
 }
