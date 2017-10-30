@@ -1,0 +1,15 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/groups",
+        "bodyPatterns": [
+            {
+                "equalToJson": "{\"name\": \"rodzina\",\"pluginName\": \"geolocation\",\"adminId\": [1,1,1]}"
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "response-to-create-group-family.json"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "request": {
+        "method": "DELETE",
+        "urlPattern": "/groups/([a-z]*)/members/([a-z]*)"
+    },
+    "response": {
+        "status": 204
+    }
+}

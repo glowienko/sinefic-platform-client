@@ -1,0 +1,15 @@
+{
+    "request": {
+        "method": "POST",
+        "url": "/auth",
+        "bodyPatterns": [
+            {
+                "equalToJson": "{\"tagId\": [1,1,1]}"
+            }
+        ]
+    },
+    "response": {
+        "status": 200,
+        "bodyFileName": "response-to-auth-tag-111.json"
+    }
+}
