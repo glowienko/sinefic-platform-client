@@ -1,8 +1,8 @@
 import { Component } from '@angular/core';
 import { NavController, NavParams, ViewController } from 'ionic-angular';
 
-import { Group } from './../../classes/group';
-import { ContentUrl } from './../../classes/content-url'
+import { Group } from './../../../providers/tags-client/domain/group';
+import { ContentUrl } from './../../../providers/tags-client/domain/content-url'
 
 @Component({
   selector: 'page-subscriber-group-selected-modal',
@@ -13,7 +13,8 @@ export class SubscriberGroupSelectedModalPage {
   group: Group;
   url: ContentUrl;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public viewCtrl: ViewController) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, 
+    public viewCtrl: ViewController) {
 
    }
 

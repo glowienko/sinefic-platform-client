@@ -5,12 +5,12 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
-import { TagInfo } from './../classes/tag-info';
-import { ContentUrl } from './../classes/content-url';
-import { Group } from './../classes/group';
+import { UserTagData } from './domain/user-tag-data';
+import { ContentUrl } from './domain/content-url';
+import { Group } from './domain/group';
 
 @Injectable()
-export class TagsApi {
+export class TagsClient {
 
   private groupsUrl: string;
   private tagUrl: string;
@@ -18,10 +18,10 @@ export class TagsApi {
   private headers: Headers;
   private options: RequestOptions;
 
-  private server_url: string = 'http://localhost:9595';
+  private server_url: string = 'http://localhost:9595';// TODO: should be taken from config
 
   constructor(public http: Http, public storage: Storage) {
-    this.groupsUrl = '/api/groups';
+    this.groupsUrl = '/api/groups';// TODO: should be taken from config
     this.tagUrl = '/api/tag';
     this.contentUrl = '/api/content/url';
 
@@ -30,7 +30,7 @@ export class TagsApi {
     this.options = new RequestOptions({ headers: this.headers });
   }
 
-  public getTagInfoById(tagId: Array<Number>): Observable<TagInfo> {
+  public getTagInfoById(tagId: Array<Number>): Observable<UserTagData> {
 
     console.log('in get tag info method api call');
 
@@ -81,7 +81,7 @@ export class TagsApi {
       .catch(this.handleError);
   }
 
-  public addTagToGroup(groupName: string, newTag: Array<Number>): Observable<Group> {
+  public addTagToGroup(groupName: string, newTag: UserTagData): Observable<Group> {
     this.addAuthHeaderIfNoExist();
     let addTagTogroupUrl: any = this.server_url + this.tagUrl + `/${groupName}`;
 
@@ -106,8 +106,8 @@ export class TagsApi {
     if (!this.headers.has('Authorization')) {
       this.storage.ready().then(() => {
         this.storage.get('tag-info').then(
-          (tagInfo: TagInfo) => {
-            this.headers.append('Authorization', tagInfo.access_token);
+          (UserTagData: UserTagData) => {
+            this.headers.append('Authorization', UserTagData.access_token);
             this.options = new RequestOptions({ headers: this.headers });
           });
       });

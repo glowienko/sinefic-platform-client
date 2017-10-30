@@ -1,41 +1,29 @@
 import { Injectable } from '@angular/core';
 import { AlertController, NavController } from 'ionic-angular';
 
-import { Storage } from '@ionic/storage'; import { TagsApi } from './../providers/tags-api'
+import { Storage } from '@ionic/storage';
+import { TagsClient } from './../providers/tags-client/tags-client'
 import { AdminPage } from './../pages/admin/admin';
 import { SubscriberPage } from './../pages/subscriber/subscriber';
 
-import { TagInfo } from './../classes/tag-info';
+import { UserTagData } from './../providers/tags-client/domain/user-tag-data';
 
 @Injectable()
-export class TagService {
+export class NfcTagService {
 
-    constructor(private storage: Storage, private alertCtrl: AlertController,
-        private navCtrl: NavController, private tagsApi: TagsApi) { }
-
+    constructor(private storage: Storage, private alertCtrl: AlertController, 
+        private navCtrl: NavController, private tagsClient: TagsClient) { }
 
     public tagReadSuccess(tagEvent: any) {
-        let tag = tagEvent.tag;// tag is in json format
-
         console.log('in tag read success, tag:');
+        console.log(tagEvent.tag);
 
-        console.log(tag);
-
-        this.tagsApi.getTagInfoById(tag.id)
+        this.tagsClient.getTagInfoById(this.extractTagIdFromTagEvent(tagEvent))
             .subscribe(
-            (tagInfo) => {
-                console.log(tagInfo);
-                this.storage.ready().then(() => {
-
-                    console.log('in tag storage ready, saving: tag-info and tag-id');
-                    console.log(tagInfo);
-                    console.log(tag.id);
-
-                    this.storage.set('tag-info', tagInfo);
-                    this.storage.set('tag-id', tag.id);
-                });
-
-                this.showTagReadSuccessAlert(tagInfo.isAdmin);
+            (userTagData) => {
+                console.log(userTagData);
+                this.saveUserTagToStorage(userTagData);
+                this.showTagReadSuccessAlert(userTagData.isAdmin);
             },
             error => this.showApiConnectionError(error));
     }
@@ -47,6 +35,23 @@ export class TagService {
             buttons: ['Ok']
         });
         alert.present();
+    }
+    
+
+    public extractTagIdFromTagEvent(tagEvent: any) {
+        return tagEvent.tag.id;
+    }
+
+    private saveUserTagToStorage(userTagData: UserTagData) {
+        this.storage.ready()
+            .then(() => {
+
+                console.log('in tag storage ready, saving: user-tag-data');
+                console.log(userTagData);
+
+                this.storage.set('tag-info', userTagData);
+                this.storage.set('tag-id', userTagData.id);
+            });
     }
 
     private showTagReadSuccessAlert(isAdmin: boolean) {

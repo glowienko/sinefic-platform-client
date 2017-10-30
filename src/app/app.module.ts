@@ -1,17 +1,22 @@
-import { NgModule, ErrorHandler } from '@angular/core';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
-import { MyApp } from './app.component';
-import { StatusBar } from '@ionic-native/status-bar';
+import { IonicApp, IonicErrorHandler, IonicModule } from 'ionic-angular';
+import { ErrorHandler, NgModule } from '@angular/core';
+import { BrowserModule } from '@angular/platform-browser';
 import { SplashScreen } from '@ionic-native/splash-screen';
+import { StatusBar } from '@ionic-native/status-bar';
+import { HttpModule } from '@angular/http';
+
+
 import { NFC } from '@ionic-native/nfc';
 import { IonicStorageModule } from '@ionic/storage';
+
+import { MyApp } from './app.component';
+import { HomePage } from '../pages/home/home';
 import { AdminPage } from '../pages/admin/admin';
 import { SubscriberPage } from '../pages/subscriber/subscriber';
 import { GroupManagementPage } from '../pages/group-management/group-management';
 import { SubscriberGroupSelectedModalPage } from '../pages/subscriber-group-selected-modal/subscriber-group-selected-modal'
 
-import { HomePage } from '../pages/home/home';
-import { TagsApi } from './../providers/tags-api'
+import { TagsClient } from './../providers/tags-client/tags-client'
 
 @NgModule({
   declarations: [
@@ -23,8 +28,11 @@ import { TagsApi } from './../providers/tags-api'
     SubscriberGroupSelectedModalPage
   ],
   imports: [
+    BrowserModule,
+    HttpModule,
     IonicModule.forRoot(MyApp),
     IonicStorageModule.forRoot()
+
   ],
   bootstrap: [IonicApp],
   entryComponents: [
@@ -38,10 +46,10 @@ import { TagsApi } from './../providers/tags-api'
   providers: [
     StatusBar,
     SplashScreen,
-    { provide: ErrorHandler, useClass: IonicErrorHandler },
+    {provide: ErrorHandler, useClass: IonicErrorHandler},
     NFC,
     Storage,
-    TagsApi
+    TagsClient
   ]
 })
-export class AppModule { }
+export class AppModule {}

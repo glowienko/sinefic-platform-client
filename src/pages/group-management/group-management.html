@@ -6,13 +6,15 @@
 </ion-header>
 
 <ion-list no-lines>
-  <ion-item *ngFor="let groupMember of  groupMembers" (click)="showGroupMemeberDetails()" >
+  <ion-item *ngFor="let groupMember of  groupMembers" (click)="groupMember.showDetails = true">
     {{groupMember.name}}
+    <div *ngIf="groupMember.showDetails">
+      <button ion-button outline (click)="deleteGroupMember(groupMember)">Delete group member</button>
+    </div>
   </ion-item>
 </ion-list>
-
-<button ion-button outline >Add tag to group</button>
-<button ion-button outline >Delete group</button>
+<button ion-button outline (click)="addGroupMember(groupMember)">Add user to group</button>
+<button ion-button outline (click)="deleteGroup()">Delete group</button>
 <ion-content padding>
 
 </ion-content>

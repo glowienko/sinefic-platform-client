@@ -3,9 +3,9 @@ import { NavController, NavParams, ModalController, AlertController } from 'ioni
 import { Storage } from '@ionic/storage';
 
 import { GroupManagementPage } from './../../pages/group-management/group-management';
-import { Group } from './../../classes/group';
-import { TagsApi } from './../../providers/tags-api';
-import { TagInfo } from './../../classes/tag-info';
+import { Group } from './../../providers/tags-client/domain/group';
+import { TagsClient } from './../../providers/tags-client/tags-client';
+import { UserTagData } from './../../providers/tags-client/domain/user-tag-data';
 
 @Component({
   selector: 'page-admin',
@@ -20,7 +20,7 @@ export class AdminPage {
 
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    private storage: Storage, private tagsApi: TagsApi, public modalCtrl: ModalController,
+    private storage: Storage, private tagsApi: TagsClient, public modalCtrl: ModalController,
     private alertCtrl: AlertController) { }
 
   ionViewDidLoad() {
@@ -73,8 +73,8 @@ export class AdminPage {
     this.storage.ready().then(() => {
       this.storage.get('tag-info')
         .then(
-        (tagInfo: TagInfo) => {
-          this.groups = tagInfo.groups;
+        (userTagData: UserTagData) => {
+          this.groups = userTagData.groups;
         });
     });
   }
