@@ -1,14 +1,22 @@
 <ion-header>
   <ion-navbar>
-    <ion-title>{{group.name}}</ion-title>
+    <ion-title>Grupa : {{group.name}}</ion-title>
   </ion-navbar>
 </ion-header>
 
-<a ngIf="groupContentUrl" ngIf="!isTagGroupAdmin" href="{{groupContentUrl}}" target="blank">
+<ion-content padding>
+    
+<a *ngIf="groupContentUrl && !isTagGroupAdmin" href="{{groupContentUrl}}" target="blank">
   <button ion-button outline>Zobacz dane</button> 
 </a>
+<br>
 <button ion-button outline *ngIf="isTagGroupAdmin" (click)="openPluginApp()">Udostępnij dane dla grupy</button>
 <hr>
 <button ion-button outline *ngIf="isTagGroupAdmin"(click)="addGroupMember(groupMember)">Dodaj tag do grupy</button>
+<br>
 <button ion-button outline *ngIf="isTagGroupAdmin"(click)="deleteGroupMember()">Usuń tag z grupy </button>
+<br>
 <button ion-button outline *ngIf="isTagGroupAdmin"(click)="deleteGroup()">Usuń grupę</button>
+
+</ion-content>
+    

@@ -3,7 +3,6 @@ import { NavController, NavParams, ModalController } from 'ionic-angular';
 
 import { Group } from './../../providers/tags-client/domain/group';
 import { Content } from './../../providers/tags-client/domain/content'
-import { UserTagData } from './../../providers/tags-client/domain/user-tag-data';
 import { TagsClient } from './../../providers/tags-client/tags-client';
 
 import { ScanTagIdModalPage } from './scan-tag-id-modal/scan-tag-id-modal';
@@ -17,17 +16,21 @@ export class GroupManagementPage {
 
   private userTagId: Array<Number>;
   public group: Group;
-  public groupMembers: Array<UserTagData>;
   public groupContentUrl: String;
   public isTagGroupAdmin: boolean;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, public tagsClient: TagsClient, public modalCtrl: ModalController) { }
-
-  ionViewDidLoad() {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public tagsClient: TagsClient,
+    public modalCtrl: ModalController) { 
     this.group = this.navParams.data.group;
     this.userTagId = this.navParams.data.tagId;
+    
     this.getContentUrlForGroup(this.group);
-    this.evaluateUserTagScope(this.userTagId, this.group.adminId);
+    console.log("THINGS FROM PARAMS, group and userTagId, groupAdminId");
+    console.log(this.group);
+    console.log(this.userTagId);
+    console.log(this.group.adminId);
+    
+    this.evaluateUserTagScope(this.userTagId, this.group.adminId);    
   }
 
   public openPluginApp() {
@@ -54,6 +57,7 @@ export class GroupManagementPage {
     this.tagsClient.deleteGroup(this.group.name);
   }
 
+
   private createTagIdScanningModal() {
     let scanTagIdModal = this.modalCtrl.create(ScanTagIdModalPage);
     scanTagIdModal.present();
@@ -63,13 +67,24 @@ export class GroupManagementPage {
   private getContentUrlForGroup(group: Group) {
     this.tagsClient.getContentUrl(group.name)
       .subscribe(
-          (content: Content) => this.groupContentUrl = content.url
+          (content: Content) =>{
+            this.groupContentUrl = content.url
+            console.log("GROUP CONTENT URL:");
+            console.log(this.groupContentUrl);
+            
+          },
+          error => this.groupContentUrl = null
         )
   }
 
   private evaluateUserTagScope(userTagId, groupAdminId)  {
-    this.isTagGroupAdmin = userTagId === groupAdminId ? true : false;
+    console.log("evaluateUserTagScope METHOD:");
+    this.isTagGroupAdmin = userTagId == groupAdminId;
+    this.isTagGroupAdmin = !this.isTagGroupAdmin;   //TODO: REMOVE THIS
+    console.log(this.isTagGroupAdmin);
   }
+
+  
 
 }
 

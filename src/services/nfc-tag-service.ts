@@ -20,6 +20,7 @@ export class NfcTagService {
         this.tagsClient.authenticateTag(this.extractTagIdFromTagEvent(tagEvent))
             .subscribe(
             (userTagData) => {
+                console.log("tag authenticated");
                 console.log(userTagData);
                 this.saveUserTagToStorage(userTagData);
                 this.showTagReadSuccessAlert();

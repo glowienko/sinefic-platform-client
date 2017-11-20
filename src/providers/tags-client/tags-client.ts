@@ -15,7 +15,7 @@ export class TagsClient {
   private headers: Headers;
   private options: RequestOptions;
 
-  private server_url: string = 'http://localhost:9595';// TODO: should be taken from config
+  private server_url: string = 'http://localhost:9595';
   private auth_request_path: string = '/auth';
   private groups_path = '/groups';
   private content_path: string = '/content';
@@ -23,7 +23,6 @@ export class TagsClient {
   private members_path: string = '/members';
 
   constructor(public http: Http, public storage: Storage) {
-
 
     this.headers = new Headers({ 'Content-Type': 'application/json' });
 
@@ -42,7 +41,9 @@ export class TagsClient {
     this.addAuthHeaderIfNotExist();
     let groupsUrl: any = this.server_url + this.groups_path;
 
-    return this.http.post(groupsUrl, newGroup, this.options)
+    console.log("________________________");
+    console.log(this.headers);
+    return this.http.post(groupsUrl, newGroup)
       .map(this.extractData)
       .catch(this.handleError);
   }
@@ -70,6 +71,9 @@ export class TagsClient {
     this.addAuthHeaderIfNotExist();
     let groupsUrl: any = this.server_url + this.groups_path + `/${groupName}`;
 
+    console.log(groupsUrl);
+    console.log(this.options);
+    
     return this.http.delete(groupsUrl, this.options)
       .map(this.extractData)
       .catch(this.handleError);
@@ -79,14 +83,14 @@ export class TagsClient {
     this.addAuthHeaderIfNotExist();
     let addTagTogroupUrl: any = this.server_url + `/${groupName}` + this.members_path;
 
-    return this.http.post(addTagTogroupUrl, {newTagId: newTagId}, this.options)
+    return this.http.post(addTagTogroupUrl, { newTagId: newTagId }, this.options)
       .map(this.extractData)
       .catch(this.handleError);
   }
 
   public deleteTagFromGroup(tagId: Array<Number>, groupName: string) {
     this.addAuthHeaderIfNotExist();
-    let deleteTagFromGroupUrl: any = this.server_url + this.groups_path +  `/${groupName}` + this.members_path + `/${tagId}`;
+    let deleteTagFromGroupUrl: any = this.server_url + this.groups_path + `/${groupName}` + this.members_path + `/${tagId}`;
 
     return this.http.delete(deleteTagFromGroupUrl, this.options)
       .map(this.extractData)
@@ -106,7 +110,7 @@ export class TagsClient {
   }
 
   private extractData(res: Response) {
-    console.log('in extract data, tags api, response:');
+    console.log('in  extractData method, tags api class , response:');
     console.log(res.json());
     let body = res.json();
     return body || {};

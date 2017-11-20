@@ -12,15 +12,17 @@ import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { GroupListPage } from '../pages/group-list/group-list';
 import { GroupManagementPage } from '../pages/group-management/group-management';
-
+import {ScanTagIdModalPage} from '../pages/group-management/scan-tag-id-modal/scan-tag-id-modal'
 import { TagsClient } from './../providers/tags-client/tags-client'
+import {NfcTagService} from './../services/nfc-tag-service';
 
 @NgModule({
   declarations: [
     MyApp,
     HomePage,
     GroupListPage,
-    GroupManagementPage
+    GroupManagementPage,
+    ScanTagIdModalPage
   ],
   imports: [
     BrowserModule,
@@ -34,7 +36,8 @@ import { TagsClient } from './../providers/tags-client/tags-client'
     MyApp,
     HomePage,
     GroupListPage,
-    GroupManagementPage
+    GroupManagementPage,
+    ScanTagIdModalPage
   ],
   providers: [
     StatusBar,
@@ -42,7 +45,8 @@ import { TagsClient } from './../providers/tags-client/tags-client'
     {provide: ErrorHandler, useClass: IonicErrorHandler},
     NFC,
     Storage,
-    TagsClient
+    TagsClient,
+    NfcTagService
   ]
 })
 export class AppModule {}

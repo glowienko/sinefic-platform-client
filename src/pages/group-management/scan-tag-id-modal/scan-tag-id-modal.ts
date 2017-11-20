@@ -7,32 +7,34 @@ import { NfcTagService } from './../../../services/nfc-tag-service'
 @Component({
   selector: 'page-scan-tag-id-modal',
   templateUrl: 'scan-tag-id-modal.html',
+  providers: [NfcTagService]
 })
 export class ScanTagIdModalPage {
-
-
-  scannedTagId: Array<Number>
+  private scannedTagId: Array<Number>
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
-    public viewCtrl: ViewController, public nfc: NFC,
+    public viewCtrl: ViewController, 
+    public nfc: NFC,
     private alertCtrl: AlertController,
-    public nfcTagService: NfcTagService) {
-  }
+    public nfcTagService: NfcTagService) {}
 
   ionViewDidLoad() {
     console.log('ionViewDidLoad ScanTagIdModalPage');
-
     this.nfc.enabled().then(
       () => {
         this.onNfcEnabled();
       },
       () => this.onNfcDisabled());
-
-
   }
 
   dismiss() {
     this.viewCtrl.dismiss(this.scannedTagId);
+  }
+
+  public groupsPage() {
+    let tag = { id: [1, 1, 1] };
+    let tagEvent = { 'tag': tag };
+    this.nfcTagService.tagReadSuccess(tagEvent);
   }
 
   private onNfcDisabled() {

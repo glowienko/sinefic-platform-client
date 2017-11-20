@@ -6,9 +6,11 @@
 
 <ion-content padding>
   <ion-list>
-    <button ion-item *ngFor="let group of userTag.groups" (click)="manageGroup(group)">
-    {{ group.name }}
-  </button>
+    <div *ngIf="showList">
+      <button ion-item *ngFor="let group of userTag.groups" (click)="manageGroup(group)">
+        {{ group.name }}
+      </button>
+    </div>
   </ion-list>
-   <ion-icon name="add-circle" (click)=showAddGroupPopup()></ion-icon>
+  <ion-icon name="add-circle" (click)=showAddGroupPopup()></ion-icon>
 </ion-content>

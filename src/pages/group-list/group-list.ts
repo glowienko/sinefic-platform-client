@@ -6,7 +6,6 @@ import { GroupManagementPage } from './../../pages/group-management/group-manage
 
 import { Group } from './../../providers/tags-client/domain/group';
 import { UserTagData } from './../../providers/tags-client/domain/user-tag-data';
-import { Content } from './../../providers/tags-client/domain/content';
 import { TagsClient } from './../../providers/tags-client/tags-client';
 
 @IonicPage()
@@ -18,13 +17,14 @@ export class GroupListPage {
 
   public userTag: UserTagData;
   public errorMessage: any;
+  public showList: boolean;
 
   constructor(public navCtrl: NavController, public navParams: NavParams,
     private storage: Storage, private tagsClient: TagsClient, public modalCtrl: ModalController,
     private alertCtrl: AlertController) {
-  }
 
-  ionViewDidLoad() {
+    this.showList = false;
+    console.log('IN GROUPS VIEW ONLOAD');
     this.getUserTagData();
   }
 
@@ -37,7 +37,7 @@ export class GroupListPage {
     let alert = this.alertCtrl.create();
 
     alert.setTitle('Dodaj grupę');
-    alert.setMessage('Stwórz grupę podając jej nazwę i usugę jaka będzie jej przypisana');
+    alert.setMessage('Stwórz grupę podając jej nazwę i usługę jaka będzie jej przypisana');
     alert.addButton('Cofnij');
     alert.addButton({
       text: 'Ok',
@@ -69,10 +69,12 @@ export class GroupListPage {
       .subscribe(
       createdGroup => this.userTag.groups.push(createdGroup),
       error => this.errorMessage = <any>error
-    );
+      );
   }
 
   private getUserTagData() {
+    console.log('GET USER TAG DATA');
+
     this.storage.ready().then(
       () => this.fetchTagInfoFromStorage()
     );
@@ -81,7 +83,10 @@ export class GroupListPage {
   private fetchTagInfoFromStorage() {
     this.storage.get('tag-info').then(
       (userTagData: UserTagData) => {
-      this.userTag = userTagData;
+        console.log('TAG FETCHED from storage:');
+        console.log(userTagData)
+        this.userTag = userTagData;
+        this.showList = true;
       }
     );
   }
