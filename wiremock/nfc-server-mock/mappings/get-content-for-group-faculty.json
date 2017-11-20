@@ -1,16 +1,11 @@
 {
     "request": {
         "method": "ANY",
-        "url": "/auth",
-        "bodyPatterns": [
-            {
-                "equalToJson": "{\"tagId\": [1,1,1]}"
-            }
-        ]
+        "url": "/groups/wydzial/content"
     },
     "response": {
         "status": 200,
-        "bodyFileName": "response-to-auth-tag-111.json",
+        "bodyFileName": "response-to-get-content-for-group-faculty.json",
         "headers":{
             "Access-Control-Allow-Origin" : "*",
             "Access-Control-Allow-Methods" : "*",

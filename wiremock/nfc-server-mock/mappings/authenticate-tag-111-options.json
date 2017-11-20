@@ -1,0 +1,14 @@
+{
+    "request": {
+        "method": "OPTIONS",
+        "url": "/auth"
+    },
+    "response": {
+        "status": 200,
+        "headers":{
+        "Access-Control-Allow-Origin" : "*", //SEE IN NODE JS APP CORS SETTINGS
+        "Access-Control-Allow-Methods" : "*",
+        "Access-Control-Allow-Headers" : "Content-Type"
+        }
+    }
+}

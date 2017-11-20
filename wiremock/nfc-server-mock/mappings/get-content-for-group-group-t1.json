@@ -1,11 +1,11 @@
 {
     "request": {
         "method": "ANY",
-        "url": "/groups/praca/content"
+        "url": "/groups/grupa%20T1/content"
     },
     "response": {
         "status": 200,
-        "bodyFileName": "response-to-get-content-for-group-work.json",
+        "bodyFileName": "response-to-get-content-for-group-t1.json",
         "headers":{
             "Access-Control-Allow-Origin" : "*", //SEE IN NODE JS APP CORS SETTINGS
             "Access-Control-Allow-Methods" : "*",
